@@ -1,9 +1,9 @@
 **[Project Page]** | **arXiv**(soon to come)
 
-**[Qiwei Liang](https://kolakivy.github.io/)**, Boyang Cai, Minghao Lai, Sitong Zhuang, Tao Lin, Yan Qin, Yixuan Ye, Jiaming Liang, [Renjing Xu](https://openreview.net/profile?id=~Renjing_Xu1)
+**[Qiwei Liang](https://kolakivy.github.io/)**, Boyang Cai, Minghao Lai, Sitong Zhuang, [Tao Lin](https://lintao.online/), Yan Qin, Yixuan Ye, Jiaming Liang, [Renjing Xu](https://openreview.net/profile?id=~Renjing_Xu1)
 
 <p align="center">
-<img src="./teaser.png" width="80%"/>
+<img src="./teaser.png" width="100%"/>
 </p>
 
 # 💻 Installation
@@ -34,11 +34,11 @@ pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2
 	```shell
 	bash scripts/pretrain_afro.sh afro adroit_door afro_pretrain_data100 0 0
 	```
-	arg2: config_name   (here refers to afro.yaml in config)
-	arg3: task_name
-	arg4: additional information to name the outputs directory
-	arg5: seed
-	arg6: GPU_id
+	- arg2: config_name   (here refers to afro.yaml in config)
+	- arg3: task_name
+	- arg4: additional information to name the outputs directory
+	- arg5: seed
+	- arg6: GPU_id
 
 3. Train state_encoder and diffusion head:
 	```shell
