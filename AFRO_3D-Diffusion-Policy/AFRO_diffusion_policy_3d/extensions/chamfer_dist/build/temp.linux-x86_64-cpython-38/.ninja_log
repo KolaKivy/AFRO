@@ -1,0 +1,5 @@
+# ninja log v7
+1	26123	1758524861049624584	/mnt/data/zhaungsitong/Point-MAE-main/extensions/chamfer_dist/build/temp.linux-x86_64-cpython-38/chamfer_cuda.o	3476539fab11c5ba
+0	55549	1758524861049624584	/mnt/data/zhaungsitong/Point-MAE-main/extensions/chamfer_dist/build/temp.linux-x86_64-cpython-38/chamfer.o	8012cecd9dcb94d5
+57	26099	1760359079129347431	/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/Point-MAE-main/extensions/chamfer_dist/build/temp.linux-x86_64-cpython-38/chamfer_cuda.o	9a8e78ac39281c71
+57	53390	1760359079129347431	/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/Point-MAE-main/extensions/chamfer_dist/build/temp.linux-x86_64-cpython-38/chamfer.o	b20976f5b10f05a8

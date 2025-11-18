@@ -1,0 +1,77 @@
+# filepath: /mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/diffusion_policy_3d/config/task/rh20t_pretrain.yaml
+
+# @package _global_
+
+name: rh20t_pretrain
+
+task_name: rh20t_pretrain
+# =================================================================
+# 数据集配置 (现在位于 "dataset" 关键字下)
+# =================================================================
+shape_meta: &shape_meta
+  obs:
+    point_cloud:
+      # 如果 use_pc_color=True, 维度是 6 (xyzrgb)
+      # 如果 use_pc_color=False, 维度是 3 (xyz)
+      shape: [4096, 6] 
+      type: float32
+    rgb:
+      # RGB 图像尺寸 (H, W, C)
+      shape: [480, 640, 3] 
+      type: uint8
+    agent_pos:
+      # 机械臂末端位姿 (xyz+quat)
+      shape: [7] 
+      type: float32
+  action:
+    # 动作空间与 agent_pos 保持一致
+    shape: [7] 
+    type: float32
+
+dataset:
+  _target_: diffusion_policy_3d.dataset.rh20t_dataset.RH20TDataset
+  dataset_dir: /mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/RH20T/RH20T_cfg5
+  horizon: ${horizon}
+  pad_before: ${eval:'${n_obs_steps}-1'}
+  pad_after: ${eval:'${n_action_steps}-1'}
+  seed: 42
+  val_ratio: 0.02
+  max_train_episodes: 90
+  shape_meta: ${task.shape_meta}
+  
+  # 核心参数: 设置为 True 来使用 xyz+rgb 点云
+  # use_pc_color: True 
+
+
+
+# =================================================================
+# 覆盖默认的 Policy 配置以适应 RH20T 数据
+# =================================================================
+# policy:
+#   # 自动从 task.dataset 配置中继承 use_pc_color 设置
+#   use_pc_color: ${task.dataset.use_pc_color}
+
+#   pointcloud_encoder_cfg:
+#     # 根据 use_pc_color 动态设置点云编码器的输入通道数
+#     in_channels: ${eval:'6 if ${task.dataset.use_pc_color} else 3'}
+#     out_channels: ${policy.encoder_output_dim}
+#     use_layernorm: true
+#     final_norm: layernorm
+#     normal_channel: false
+
+# =================================================================
+# Dataloader 配置
+# =================================================================
+# dataloader:
+#   batch_size: 32
+#   num_workers: 8
+#   shuffle: True
+#   pin_memory: True
+#   persistent_workers: True
+
+# val_dataloader:
+#   batch_size: 32
+#   num_workers: 8
+#   shuffle: False
+#   pin_memory: True
+#   persistent_workers: True
