@@ -3,8 +3,9 @@
 **[Qiwei Liang](https://kolakivy.github.io/)**, Boyang Cai, Minghao Lai, Sitong Zhuang, Tao Lin, Yan Qin, Yixuan Ye, Jiaming Liang, [Renjing Xu](https://openreview.net/profile?id=~Renjing_Xu1)
 
 <p align="center">
-<img src="./teaser.pdf" width="80%"/>
+<img src="./teaser.png" width="80%"/>
 </p>
+
 # 💻 Installation
 ## Set up the environment
 1. create python/pytorch env
