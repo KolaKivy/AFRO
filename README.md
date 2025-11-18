@@ -15,7 +15,7 @@ conda activate afro
 
 git clone https://github.com/KolaKivy/AFRO.git
 ```
-2. Then follow the step 2 to 6 referred to the [installation of DP3]([3D-Diffusion-Policy/INSTALL.md at master · YanjieZe/3D-Diffusion-Policy](https://github.com/YanjieZe/3D-Diffusion-Policy/blob/master/INSTALL.md))
+2. Then follow the step 2 to 6 referred to the [installation of DP3](https://github.com/YanjieZe/3D-Diffusion-Policy/blob/master/INSTALL.md)
 3. install some necessary packages
 ```
 pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2.0 dill==0.3.5.1 einops==0.4.1 diffusers==0.11.1 numba==0.56.4 moviepy imageio av matplotlib termcolor 
