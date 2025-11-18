@@ -515,48 +515,6 @@ class VisEncoder(nn.Module):
             else:
                 pointcloud_encoder_cfg.in_channels = 3
                 self.extractor = PointNetEncoderXYZ_SoftmaxPool(**pointcloud_encoder_cfg)
-        elif pointnet_type == "pointnet++_pretrained":
-            # from .PointNet_master.log.sem_seg.pointnet2_sem_seg.pointnet2_sem_seg import pointnet2_sem_seg
-            # from .PointNet_master.log.part_seg.pointnet2_part_seg_msg.pointnet2_part_seg_msg import pointnet2_part_seg_msg
-            cprint(f"[DP3Encoder] use pointnet++_pretrained", "red")
-            # Initialize the model with appropriate number of classes
-            # The model expects (B, C, N) format input
-            
-            if use_pc_color:
-                from .PointNet_master.log.classification.pointnet2_ssg_wo_normals.pointnet2_cls_ssg import pointnet2_cls_ssg_wo_normals
-                checkpoint_path = "/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/diffusion_policy_3d/model/vision/PointNet_master/log/classification/pointnet2_ssg_wo_normals/checkpoints/best_model.pth"
-                pointcloud_encoder_cfg.in_channels = 6
-                # For semantic segmentation, we need to specify num_classes
-                # Using a reasonable default, adjust if needed
-                self.extractor = pointnet2_cls_ssg_wo_normals(num_class=40)
-            else:
-                raise NotImplementedError(f"pointnet++_pretrained with use_pc_color: {use_pc_color}")
-
-            # Load pretrained weights
-            try:
-                checkpoint = torch.load(checkpoint_path, map_location='cpu')
-                # Handle different checkpoint formats
-                if 'model_state_dict' in checkpoint:
-                    state_dict = checkpoint['model_state_dict']
-                elif 'state_dict' in checkpoint:
-                    state_dict = checkpoint['state_dict']
-                else:
-                    state_dict = checkpoint
-                
-                self.extractor.load_state_dict(state_dict, strict=False)
-                cprint(f"[DP3Encoder] Successfully loaded pretrained weights from {checkpoint_path}", "green")
-            except Exception as e:
-                cprint(f"[DP3Encoder] Warning: Could not load pretrained weights: {e}", "yellow")
-            
-            # Freeze the model parameters to prevent training
-            for param in self.extractor.parameters():
-                param.requires_grad = False
-            cprint(f"[DP3Encoder] Froze pointnet2_sem_seg parameters", "green")
-            self.final_projection = nn.Sequential(
-                nn.Linear(1024, out_channel),
-                nn.LayerNorm(out_channel)
-            )
-            self.n_output_channels = out_channel
         elif pointnet_type == "pointtransformer":
             cprint(f"use pointtransformer", "red")
             if use_pc_color:
@@ -569,53 +527,6 @@ class VisEncoder(nn.Module):
         elif pointnet_type == "pointempty":
             cprint(f"[DP3Encoder] use pointempty", "red")
             self.n_output_channels = 1024
-        elif pointnet_type == "pointcnn":
-            from .pointcnn.pointcnn import PointCNN
-            cprint(f"[DP3Encoder] use pointcnn", "red")
-            if use_pc_color:
-                pointcloud_encoder_cfg.in_channels = 6
-                self.extractor = PointCNN(**pointcloud_encoder_cfg)
-            else:
-                pointcloud_encoder_cfg.in_channels = 3
-                self.extractor = PointCNN(**pointcloud_encoder_cfg)
-        elif pointnet_type == "clip":
-            cprint(f"use clip", "red")
-            import clip
-            clip_model = "ViT-B/32"
-            self.clip, self.preprocess = clip.load(clip_model, jit=False)
-            cprint(f"clip loaded is {clip_model}", "red")
-            self.clip = self.clip.eval().requires_grad_(False)
-            self.clip = self.clip.to(self.device)
-            cprint(f"[CLIP] Model loaded and moved to {self.device}", "green")
-            clip_feature_dim = self.clip.visual.output_dim
-            cprint(f"[CLIP] Feature dimension: {clip_feature_dim}", "green")
-            self.img_projection = nn.Sequential(
-                nn.Linear(clip_feature_dim, out_channel),
-                nn.LayerNorm(out_channel)
-            )
-            self.n_output_channels = out_channel
-        elif pointnet_type == "dinov2":
-            cprint(f"use dinov2", "red")
-            # Use timm for better Python 3.8 compatibility
-            try:
-                import timm
-                dinov2_model = 'vit_small_patch14_dinov2.lvd142m'
-                self.dinov2 = timm.create_model(dinov2_model, pretrained=True)
-                cprint(f"dinov2 loaded is {dinov2_model}", "red")
-                dinov2_feature_dim = 384  # DINOv2 ViT-S/14 output dimension
-            except ImportError:
-                raise ImportError("timm not available. Please install: pip install timm")
-            
-            self.dinov2 = self.dinov2.eval().requires_grad_(False)
-            self.dinov2 = self.dinov2.to(self.device)
-            cprint(f"[DINOv2] Model loaded and moved to {self.device}", "green")
-            cprint(f"[DINOv2] Feature dimension: {dinov2_feature_dim}", "green")
-            
-            self.img_projection = nn.Sequential(
-                nn.Linear(dinov2_feature_dim, out_channel),
-                nn.LayerNorm(out_channel)
-            )
-            self.n_output_channels = out_channel
 
         cprint(f"[DP3Encoder] output dim: {self.n_output_channels}", "red")
 
@@ -630,113 +541,11 @@ class VisEncoder(nn.Module):
         if self.pointnet_type == "pointnet" or self.pointnet_type == "pointnet_avg" or self.pointnet_type == "pointnet_soft" :
             pn_feat = self.extractor(points)    # B * out_channel
             return pn_feat
-        if self.pointnet_type == "pointnet_dynamicflow":
-            pn_feat = self.extractor(points)    # B * out_channel
-            return pn_feat
         elif self.pointnet_type == "pointtransformer":
             pn_feat = self.extractor(points)
             return pn_feat
-        elif self.pointnet_type == "pointcnn":
-            pn_feat = self.extractor(points)    # B * out_channel
-            return pn_feat
         elif self.pointnet_type == "pointempty":
-            return torch.zeros((points.shape[0], self.n_output_channels)).to(device)
-        elif self.pointnet_type == "pointnet++_pretrained":
-            # Convert from (B, N, C) to (B, C, N) format for pointnet2_sem_seg
-            points_transposed = points.transpose(1, 2)  # B * C * N
-            with torch.no_grad():  # Ensure no gradients since model is frozen
-                _, l4_points = self.extractor(points_transposed)  # Extract features from last layer
-            # l4_points should be (B, feature_dim, num_points_l4)
-            # Apply global max pooling to get (B, feature_dim)
-            pn_feat = torch.max(l4_points, dim=2)[0]  # B * feature_dim
-            # cprint(f"pn_feat shape: {pn_feat.shape}", "red")
-            pn_feat = self.final_projection(pn_feat)
-            return pn_feat
-        elif self.pointnet_type == "clip":
-            image = observations[self.rgb_image_key]
-            # print(f"[CLIP DEBUG] Original image shape: {image.shape}")
-            # print(f"[CLIP DEBUG] Image dtype: {image.dtype}, min: {image.min():.3f}, max: {image.max():.3f}")
-            
-            # Optimized GPU-only preprocessing - no PIL conversions or CPU transfers
-            B = image.shape[0]
-            
-            # Handle different input formats
-            if image.dim() == 4:
-                if image.shape[-1] == 3:  # [B, H, W, C] format
-                    image = image.permute(0, 3, 1, 2)  # -> [B, C, H, W]
-                # else already [B, C, H, W]
-            
-            # Convert dtype if needed (uint8 -> float32)
-            if image.dtype == torch.uint8:
-                image = image.float() / 255.0
-            
-            # Ensure values are in [0, 1] range
-            if image.max() > 1.0:
-                image = image / 255.0
-            
-            # Resize to 224x224 if needed (GPU operation)
-            if image.shape[-2:] != (224, 224):
-                image = F.interpolate(image, size=(224, 224), mode='bilinear', align_corners=False)
-            
-            # Apply CLIP normalization (ImageNet stats) - all GPU operations
-            mean = torch.tensor([0.48145466, 0.4578275, 0.40821073], device=image.device).view(1, 3, 1, 1)
-            std = torch.tensor([0.26862954, 0.26130258, 0.27577711], device=image.device).view(1, 3, 1, 1)
-            processed_batch = (image - mean) / std
-            
-            with torch.no_grad():
-                image_feat = self.clip.encode_image(processed_batch)
-            
-            image_feat = image_feat.float()
-            # print(f"[CLIP DEBUG] CLIP encoded features shape: {image_feat.shape}")
-            # print(f"[CLIP DEBUG] CLIP features dtype: {image_feat.dtype}")
-            image_feat = self.img_projection(image_feat)
-            # print(f"[CLIP DEBUG] After projection shape: {image_feat.shape}")
-            return image_feat
-        elif self.pointnet_type == "dinov2":
-            image = observations[self.rgb_image_key]
-            # print(f"[DINOv2 DEBUG] Original image shape: {image.shape}")
-            # print(f"[DINOv2 DEBUG] Image dtype: {image.dtype}, min: {image.min():.3f}, max: {image.max():.3f}")
-            
-            # Optimized GPU-only preprocessing - no PIL conversions or CPU transfers
-            B = image.shape[0]
-            
-            # Handle different input formats
-            if image.dim() == 4:
-                if image.shape[-1] == 3:  # [B, H, W, C] format
-                    image = image.permute(0, 3, 1, 2)  # -> [B, C, H, W]
-                # else already [B, C, H, W]
-            
-            # Convert dtype if needed (uint8 -> float32)
-            if image.dtype == torch.uint8:
-                image = image.float() / 255.0
-            
-            # Ensure values are in [0, 1] range
-            if image.max() > 1.0:
-                image = image / 255.0
-            
-            # Resize to 518x518 for DINOv2 model (GPU operation)
-            if image.shape[-2:] != (518, 518):
-                image = F.interpolate(image, size=(518, 518), mode='bilinear', align_corners=False)
-            
-            # Apply DINOv2 normalization (ImageNet stats) - all GPU operations
-            mean = torch.tensor([0.485, 0.456, 0.406], device=image.device).view(1, 3, 1, 1)
-            std = torch.tensor([0.229, 0.224, 0.225], device=image.device).view(1, 3, 1, 1)
-            processed_batch = (image - mean) / std
-            
-            with torch.no_grad():
-                image_feat = self.dinov2(processed_batch)
-            
-            image_feat = image_feat.float()
-            # print(f"[DINOv2 DEBUG] DINOv2 encoded features shape: {image_feat.shape}")
-            # print(f"[DINOv2 DEBUG] DINOv2 features dtype: {image_feat.dtype}")
-            image_feat = self.img_projection(image_feat)
-            # print(f"[DINOv2 DEBUG] After projection shape: {image_feat.shape}")
-            return image_feat
-        elif self.pointnet_type == "pointdif":
-            B,_,_ = points.shape
-            neighborhood, center = self.group_divider(points)
-            encoder_token, mask = self.mask_encoder(neighborhood, center) 
-            return encoder_token, mask, center           
+            return torch.zeros((points.shape[0], self.n_output_channels)).to(device)        
 
     def output_shape(self):
         return self.n_output_channels

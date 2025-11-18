@@ -81,12 +81,8 @@ policy:
 
   use_pc_color: False
   pointnet_type: "pointnet"
-  # pointnet_type: "pointnet_dynamicflow"
-  # pointnet_type: "clip"
-  # pointnet_type: "dinov2"
-  # pointnet_type: "pointcnn"
-  # pointnet_type: "uni3d"
-  # pointnet_type: "pointdif"
+  # pointnet_type: "pointtransformer"
+
 
   pointcloud_encoder_cfg:
     in_channels: 3

@@ -80,10 +80,6 @@ policy:
   use_pc_color: false
   pointnet_type: "pointnet"
   # pointnet_type: "pointempty"
-  # pointnet_type: "pointnet++_pretrained"
-  # pointnet_type: "clip"
-  # pointnet_type: "dinov2"
-  # pointnet_type: "pointcnn"
 
 
   pointcloud_encoder_cfg:
