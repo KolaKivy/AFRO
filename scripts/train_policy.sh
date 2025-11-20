@@ -43,7 +43,7 @@ fi
 echo -e "\033[32mrun_dir: ${run_dir}\033[0m"
 echo -e "\033[32mzarr_path: ${zarr_path}\033[0m"
 
-cd 3D-Diffusion-Policy
+cd AFRO
 
 
 export HYDRA_FULL_ERROR=1 

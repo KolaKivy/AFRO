@@ -1,16 +1,18 @@
 # Examples:
-# bash scripts/train_afro_policy.sh afro_policy adroit_pen afro_policy 0 0
+# bash scripts/train_afro_policy.sh afro_policy adroit_pen 0001 0 0
 
 DEBUG=False
 save_ckpt=True
+pretrain_name="afro"
 
 alg_name=${1}
 task_name=${2}
 config_name=${alg_name} 
 addition_info=${3}
 seed=${4}
+pretrain_exp_name=${task_name}-${pretrain_name}-${addition_info}
 exp_name=${task_name}-${alg_name}-${addition_info}
-checkpoint="/mnt/data/zhoudingjie/kivy/AFRO_opensource/3D-Diffusion-Policy/data/outputs/adroit_door-afro-afro_pretrain_ultimate_version_data10_seed0/checkpoints/latest.ckpt"
+checkpoint="data/outputs/${pretrain_exp_name}_seed${seed}/checkpoints/pretrain_latest.ckpt"
 
 run_dir="data/outputs_policy/${exp_name}_seed${seed}" 
 zarr_path="data/${task_name}_expert.zarr"  
@@ -36,7 +38,7 @@ fi
 echo -e "\033[32mrun_dir: ${run_dir}\033[0m"
 echo -e "\033[32mzarr_path: ${zarr_path}\033[0m"
 
-cd 3D-Diffusion-Policy
+cd AFRO
 
 checkpoint_every=10
 max_train_episodes=1000000

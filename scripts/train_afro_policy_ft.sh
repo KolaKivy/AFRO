@@ -32,7 +32,7 @@ fi
 echo -e "\033[32mrun_dir: ${run_dir}\033[0m"
 echo -e "\033[32mzarr_path: ${zarr_path}\033[0m"
 
-cd 3D-Diffusion-Policy
+cd AFRO
 
 checkpoint_every=10
 max_train_episodes=1000000

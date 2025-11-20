@@ -1,5 +1,5 @@
 # Examples:
-# bash scripts/pretrain_afro.sh afro adroit_pen afro_ckpt 0 0
+# bash scripts/pretrain_afro.sh afro adroit_pen 0001 0 0
 
 DEBUG=False
 save_ckpt=True
@@ -32,7 +32,7 @@ fi
 echo -e "\033[32mrun_dir: ${run_dir}\033[0m"
 echo -e "\033[32mzarr_path: ${zarr_path}\033[0m"
 
-cd 3D-Diffusion-Policy
+cd AFRO
 
 
 export HYDRA_FULL_ERROR=1 
