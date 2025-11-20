@@ -39,7 +39,7 @@ else
 fi
 
 
-# 打印关键路径
+
 echo -e "\033[32mrun_dir: ${run_dir}\033[0m"
 echo -e "\033[32mzarr_path: ${zarr_path}\033[0m"
 

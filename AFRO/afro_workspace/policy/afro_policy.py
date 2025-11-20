@@ -19,7 +19,7 @@ from afro_workspace.common.model_util import print_params
 from afro_workspace.model.vision.pointnet_extractor import VisEncoder, StaEncoder, IDMEncoder, FDMDecoder
 # from afro_workspace.model.vision.pointnet_addition import  CPDM, CPDM_Light
 
-class DP3(BasePolicy):
+class AFRO_policy(BasePolicy):
     def __init__(self, 
             shape_meta: dict,
             noise_scheduler: DDPMScheduler,
@@ -118,14 +118,12 @@ class DP3(BasePolicy):
 
         self.vis_encoder = vis_encoder
         self.sta_encoder = sta_encoder
+        
+        # load pretrained weights
         if self.pointnet_type == "clip" or self.pointnet_type == "dinov2" or self.pointnet_type == "pointnet++_pretrained" or self.pointnet_type == "pointempty":
             cprint(f"[DiffusionUnetHybridPointcloudPolicy] pointnet_type is {self.pointnet_type}, don't load pretrained weights", "red")
         else:
             cprint(f"[DiffusionUnetHybridPointcloudPolicy] pointnet_type is {self.pointnet_type}, load pretrained weights", "red")
-            # checkpoint = torch.load(f'/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/data_25/outputs/{self.task_name}-afro-afro_ultimate_version_data25_seed2/checkpoints/latest.ckpt', map_location='cpu')
-            # checkpoint = torch.load(f'/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/data_500/outputs/{self.task_name}-afro-afro_pretrain_ultimate_version_data500_seed0/checkpoints/latest.ckpt', map_location='cpu')
-            # checkpoint = torch.load(f'/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/data_concate/outputs/metaworld_all-afro-afro_pretrain_ultimate_version_metaworld_concat_03_seed2/checkpoints/latest.ckpt', map_location='cpu')
-            # checkpoint = torch.load(f'/mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/data_concate/outputs/adroit_all-afro-afro_pretrain_ultimate_version_adroit_concat_seed0/checkpoints/latest.ckpt', map_location='cpu')
             checkpoint = torch.load(checkpoint, map_location='cpu')
             vis_encoder_weights = {}
             for key, value in checkpoint['state_dicts']['model'].items():

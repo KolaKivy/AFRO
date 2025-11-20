@@ -24,7 +24,7 @@ import shutil
 import time
 import threading
 from hydra.core.hydra_config import HydraConfig
-from afro_workspace.policy.dp3 import DP3
+from afro_workspace.policy.afro_policy import AFRO_policy
 from afro_workspace.dataset.base_dataset import BaseDataset
 from afro_workspace.env_runner.base_runner import BaseRunner
 from afro_workspace.common.checkpoint_util import TopKCheckpointManager
@@ -52,9 +52,9 @@ class TrainDP3Workspace:
         random.seed(seed)
 
         # configure model
-        self.model: DP3 = hydra.utils.instantiate(cfg.policy)
+        self.model: AFRO_policy = hydra.utils.instantiate(cfg.policy)
 
-        self.ema_model: DP3 = None
+        self.ema_model: AFRO_policy = None
         if cfg.training.use_ema:
             try:
                 self.ema_model = copy.deepcopy(self.model)
