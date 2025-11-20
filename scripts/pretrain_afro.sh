@@ -25,7 +25,7 @@ if [ $DEBUG = True ]; then
     echo -e "\033[33mDebug mode!\033[0m"
     echo -e "\033[33mDebug mode!\033[0m"
 else
-    wandb_mode=offline
+    wandb_mode=online
     echo -e "\033[33mTrain mode\033[0m"
 fi
 
