@@ -44,7 +44,7 @@ pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2
 	```shell
 	bash scripts/train_afro_policy.sh afro_policy adroit_pen 0001 0 0
 	```
-	**Note**: you should ensure that the second and third parameter inputs are the same as those pre trained in order to read correctly checkpoint to make sure importing right weights
+	**Note**: you should ensure that the second and third parameter inputs are the same as those pre trained in order to load correctly checkpoint to make sure importing right weights
 
 4. (Optional)Train state_encoder and diffusion head, Meanwhile fine-tune pre-trained visual_encoder weights
 	```shell
