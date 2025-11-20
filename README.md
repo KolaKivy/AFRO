@@ -32,7 +32,7 @@ pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2
 
 2. Train AFRO: 3D self-supervised pipeline to pretrain the visual encoder
 	```shell
-	bash scripts/pretrain_afro.sh afro adroit_door afro_pretrain_data100 0 0
+	bash scripts/pretrain_afro.sh afro adroit_pen 0001 0 0
 	```
 	- arg2: config_name   (here refers to afro.yaml in config)
 	- arg3: task_name
@@ -42,13 +42,13 @@ pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2
 
 3. Train state_encoder and diffusion head:
 	```shell
-	bash scripts/train_afro_policy.sh afro_policy adroit_door afro_policy_data100 0 0
+	bash scripts/train_afro_policy.sh afro_policy adroit_pen 0001 0 0
 	```
-	**Note**: You should open `scripts/train_afro_policy.sh` to modify your pretrained_visual_encoder checkpoint_path to make sure importing right weights
+	**Note**: you should ensure that the second and third parameter inputs are the same as those pre trained in order to read correctly checkpoint to make sure importing right weights
 
 4. (Optional)Train state_encoder and diffusion head, Meanwhile fine-tune pre-trained visual_encoder weights
 	```shell
-	bash scripts/train_afro_policy_ft.sh afro_policy adroit_door afro_policy_ft_data100 0 0
+	bash scripts/train_afro_policy_ft.sh afro_policy adroit_pen 0001 0 0
 	```
 	This will train state_encoder and diffusion head with learing rate 1.0e-4 and fine-tune visual_encoder weights with learing rate 1.0e-5
 
