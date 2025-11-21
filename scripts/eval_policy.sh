@@ -17,8 +17,6 @@ run_dir="data/outputs/${exp_name}_seed${seed}"
 gpu_id=${5}
 
 
-cd 3D-Diffusion-Policy
-
 export HYDRA_FULL_ERROR=1
 export CUDA_VISIBLE_DEVICES=${gpu_id}
 python eval.py --config-name=${config_name}.yaml \
