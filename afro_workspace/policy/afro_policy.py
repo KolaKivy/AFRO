@@ -131,28 +131,6 @@ class AFRO_policy(BasePolicy):
                     if 'ema_vis_encoder' not in key and 'vis_encoder_teacher' not in key:
                         new_key = key.replace('vis_encoder.', '')
                         vis_encoder_weights[new_key] = value
-            # for key, value in checkpoint['state_dicts']['model'].items():
-            #     if ('vis_encoder.extractor' in key) or ('vis_encoder_teacher.extractor' in key):
-            #         if 'ema_vis_encoder' not in key and 'target_vis_encoder' not in key:
-            #             new_key = key.replace('vis_encoder.', '')
-            #             vis_encoder_weights[new_key] = value
-            # for key, value in checkpoint['state_dicts']['model'].items():
-            #     if 'vis_encoder_teacher' in key: 
-            #         if 'ema_vis_encoder' not in key and 'target_vis_encoder' not in key:
-            #             new_key = key.replace('vis_encoder_teacher.', '')
-            #             vis_encoder_weights[new_key] = value
-            # for key, value in checkpoint['state_dicts']['model'].items():
-            #     if 'vis_encoder_teacher.extractor.mlp' in key: 
-            #         if 'ema_vis_encoder' not in key and 'target_vis_encoder' not in key:
-            #             new_key = key.replace('vis_encoder_teacher.extractor.mlp.', '')
-            #             vis_encoder_weights[new_key] = value
-            # for key, value in checkpoint['state_dicts']['model'].items():
-            #     if 'ema_vis_encoder' in key:
-            #         new_key = key.replace('ema_vis_encoder.', '')
-            #         vis_encoder_weights[new_key] = value
-            # self.vis_encoder.extractor.mlp.load_state_dict(vis_encoder_weights)
-            # for param in self.vis_encoder.extractor.mlp.parameters():
-            #     param.requires_grad = False
             self.vis_encoder.load_state_dict(vis_encoder_weights)
             for param in self.vis_encoder.parameters():
                 param.requires_grad = False
