@@ -8,12 +8,7 @@
 
 # 💻 Installation
 ## Set up the environment
-1. create python/pytorch env
-```bash
-conda create -n afro python=3.8 # isaacgym requires python <=3.8
-conda activate afro
-```
-2. See [INSTALL.md](INSTALL.md) for installation instructions.
+1. See [INSTALL.md](INSTALL.md) for installation instructions.
 # 🛠️ Usage
 1. **Generate demonstrations in simulation**: 
     ```shell
