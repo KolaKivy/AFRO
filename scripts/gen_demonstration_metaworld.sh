@@ -7,7 +7,7 @@ task_name=${1}
 export CUDA_VISIBLE_DEVICES=3
 python gen_demonstration_expert.py --env_name=${task_name} \
             --num_episodes 25 \
-            --root_dir "../../afro_workspace/data/" \
+            --root_dir "../../data/" \
 
 
 # stick-pull        stick-push         pick-place-wall   sweep
