@@ -46,7 +46,9 @@ pip install huggingface_hub==0.20.3 pyyaml safetensors
 
 5.install mujoco in `~/.mujoco`
 
-    cd ~/.mujoco
+    cd
+    mkdir .mujoco
+    cd .mujoco
     wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz -O mujoco210.tar.gz --no-check-certificate
     
     tar -xvzf mujoco210.tar.gz
@@ -58,6 +60,15 @@ and put the following into your bash script (usually in `YOUR_HOME_PATH/.bashrc`
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
     export MUJOCO_GL=egl
 
+Before installing mujoco-py, you must first install the following development packages:
+
+```
+# if using Ubuntu / Debian
+sudo apt update
+sudo apt install -y libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libegl1-mesa-dev libglew-dev libvulkan1
+# if using CentOS / Rocky
+sudo yum install -y libX11-devel libXext-devel libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel mesa-libGL-devel mesa-libGLU-devel mesa-libEGL-devel glew-devel vulkan-loader
+```
 
 and then install mujoco-py (in the folder of `third_party`):
 
@@ -93,7 +104,7 @@ download Adroit RL experts from [OneDrive](https://1drv.ms/u/s!Ag5QsBIFtRnTlFWqY
 
 8.install some necessary packages
 
-    pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2.0 dill==0.3.5.1 einops==0.4.1 diffusers==0.11.1 numba==0.56.4 moviepy imageio av matplotlib termcolor natsort
+    pip install zarr==2.12.0 wandb ipdb gpustat dm_control omegaconf hydra-core==1.2.0 dill==0.3.5.1 einops==0.4.1 diffusers==0.11.1 numba==0.56.4 moviepy imageio av matplotlib termcolor natsort timm
 
 
 ---

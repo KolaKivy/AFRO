@@ -134,6 +134,7 @@ class AFRO_policy(BasePolicy):
             self.vis_encoder.load_state_dict(vis_encoder_weights)
             for param in self.vis_encoder.parameters():
                 param.requires_grad = False
+            cprint(f"[DiffusionUnetHybridPointcloudPolicy] load pretrained weights successfully", "red")
             
         self.model = model
         self.noise_scheduler = noise_scheduler
