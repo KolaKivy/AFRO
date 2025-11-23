@@ -19,7 +19,7 @@ keypoint_visible_rate: 1.0
 obs_as_global_cond: True
 
 policy:
-  _target_: diffusion_policy_3d.policy.afro_policy.AFRO_policy
+  _target_: afro_workspace.policy.afro_policy.AFRO_policy
   task_whole_name: ${task_whole_name}
   checkpoint: null
   use_point_crop: true
@@ -91,7 +91,7 @@ policy:
 
 
 ema:
-  _target_: diffusion_policy_3d.model.diffusion.ema_model.EMAModel
+  _target_: afro_workspace.model.diffusion.ema_model.EMAModel
   update_after_step: 0
   inv_gamma: 1.0
   power: 0.75

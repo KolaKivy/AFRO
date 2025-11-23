@@ -15,7 +15,7 @@ shape_meta: &shape_meta
     shape: [28]
 
 env_runner:
-  _target_: diffusion_policy_3d.env_runner.adroit_runner.AdroitRunner
+  _target_: afro_workspace.env_runner.adroit_runner.AdroitRunner
   eval_episodes: 25
   # eval_episodes: 20
   max_steps: 300
@@ -27,8 +27,8 @@ env_runner:
   use_point_crop: ${policy.use_point_crop}
 
 dataset:
-  _target_: diffusion_policy_3d.dataset.adroit_dataset_only_pointcloud.AdroitDataset
-  # _target_: diffusion_policy_3d.dataset.adroit_dataset_rh20t.AdroitDataset
+  _target_: afro_workspace.dataset.adroit_dataset_only_pointcloud.AdroitDataset
+  # _target_: afro_workspace.dataset.adroit_dataset_rh20t.AdroitDataset
   zarr_path: data/adroit_door_expert.zarr
   # zarr_path: data_rh20t_to_zarr/rh20t_task_0001_09.zarr
   horizon: ${horizon}

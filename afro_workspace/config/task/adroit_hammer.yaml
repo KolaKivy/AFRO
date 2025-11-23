@@ -19,7 +19,7 @@ shape_meta: &shape_meta
     shape: [26]
 
 env_runner:
-  _target_: diffusion_policy_3d.env_runner.adroit_runner.AdroitRunner
+  _target_: afro_workspace.env_runner.adroit_runner.AdroitRunner
   eval_episodes: 20
   max_steps: 300
   n_obs_steps: ${n_obs_steps}
@@ -30,7 +30,7 @@ env_runner:
   use_point_crop: ${policy.use_point_crop}
 
 dataset:
-  _target_: diffusion_policy_3d.dataset.adroit_dataset.AdroitDataset
+  _target_: afro_workspace.dataset.adroit_dataset.AdroitDataset
   zarr_path: data/adroit_hammer_expert.zarr
   horizon: ${horizon}
   pad_before: ${eval:'${n_obs_steps}-1'}

@@ -8,7 +8,7 @@ task=${1}
 
 CUDA_VISIBLE_DEVICES=3 python gen_demonstration_expert.py --env_name $task \
                         --num_episodes 100 \
-                        --root_dir "../../../3D-Diffusion-Policy/data/" \
+                        --root_dir "../../../afro_workspace/data/" \
                         --expert_ckpt_path "../ckpts/vrl3_${task}.pt" \
                         --img_size 84 \
                         --not_use_multi_view \

@@ -3,7 +3,7 @@ import argparse
 import os
 import zarr
 import numpy as np
-from diffusion_policy_3d.env import MetaWorldEnv
+from afro_workspace.env import MetaWorldEnv
 from termcolor import cprint
 import copy
 import imageio

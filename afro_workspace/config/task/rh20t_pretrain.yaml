@@ -1,4 +1,4 @@
-# filepath: /mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/diffusion_policy_3d/config/task/rh20t_pretrain.yaml
+# filepath: /mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/3D-Diffusion-Policy/afro_workspace/config/task/rh20t_pretrain.yaml
 
 # @package _global_
 
@@ -29,7 +29,7 @@ shape_meta: &shape_meta
     type: float32
 
 dataset:
-  _target_: diffusion_policy_3d.dataset.rh20t_dataset.RH20TDataset
+  _target_: afro_workspace.dataset.rh20t_dataset.RH20TDataset
   dataset_dir: /mnt/data/zhoudingjie/kivy/3D-Diffusion-Policy/RH20T/RH20T_cfg5
   horizon: ${horizon}
   pad_before: ${eval:'${n_obs_steps}-1'}

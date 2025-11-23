@@ -16,7 +16,7 @@ import zarr
 from copy import deepcopy
 import numpy as np
 
-from diffusion_policy_3d.gym_util.mjpc_wrapper import MujocoPointcloudWrapperAdroit
+from afro_workspace.gym_util.mjpc_wrapper import MujocoPointcloudWrapperAdroit
 
 def parse_args():
     parser = argparse.ArgumentParser()
