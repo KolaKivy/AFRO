@@ -16,8 +16,7 @@ from afro_workspace.model.diffusion.conditional_unet1d import ConditionalUnet1D
 from afro_workspace.model.diffusion.mask_generator import LowdimMaskGenerator
 from afro_workspace.common.pytorch_util import dict_apply
 from afro_workspace.common.model_util import print_params
-from afro_workspace.model.vision.pointnet_extractor import VisEncoder, StaEncoder, IDMEncoder, FDMDecoder
-# from afro_workspace.model.vision.pointnet_addition import  CPDM, CPDM_Light
+from afro_workspace.model.vision.pointnet_extractor import VisEncoder, StaEncoder
 
 class AFRO_policy(BasePolicy):
     def __init__(self, 
@@ -163,7 +162,6 @@ class AFRO_policy(BasePolicy):
 
 
         print_params(self)
-        
     # ========= inference  ============
     def conditional_sample(self, 
             condition_data, condition_mask,
@@ -184,7 +182,6 @@ class AFRO_policy(BasePolicy):
 
         # set step values
         scheduler.set_timesteps(self.num_inference_steps)
-
 
         for t in scheduler.timesteps:
             # 1. apply conditioning

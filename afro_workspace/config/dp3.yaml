@@ -67,14 +67,12 @@ policy:
   # pointnet_type: "uni3d"
   # pointnet_type: "pointdif"
 
-
   pointcloud_encoder_cfg:
     in_channels: 3
     out_channels: ${policy.encoder_output_dim}
     use_layernorm: true
     final_norm: layernorm # layernorm, none
     normal_channel: false
-
 
 ema:
   _target_: afro_workspace.model.diffusion.ema_model.EMAModel
@@ -100,7 +98,6 @@ val_dataloader:
 
 optimizer:
   _target_: torch.optim.AdamW
-  # lr: 1.0e-4
   lr: 1.0e-4
   betas: [0.95, 0.999]
   eps: 1.0e-8
@@ -116,14 +113,8 @@ training:
   num_epochs: 101
   rollout_every: 10
   checkpoint_every: 10
-  # lr_warmup_steps: 20
-  # num_epochs: 501
-  # rollout_every: 50
-  # checkpoint_every: 50
   gradient_accumulate_every: 1
   use_ema: False
-  # rollout_every: 200
-  # checkpoint_every: 200
   val_every: 1
   sample_every: 5
   max_train_steps: null

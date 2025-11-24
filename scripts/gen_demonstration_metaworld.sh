@@ -9,7 +9,6 @@ python gen_demonstration_expert.py --env_name=${task_name} \
             --num_episodes 25 \
             --root_dir "../../data/" \
 
-
 # stick-pull        stick-push         pick-place-wall   sweep
 # pick-place        pick-out-of-hole   push
 # push-wall         peg-insert-side    coffee-pull       bin-picking

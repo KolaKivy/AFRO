@@ -124,8 +124,6 @@ class TrainDP3Workspace:
             num_training_steps=(
                 len(train_dataloader) * cfg.training.num_epochs) \
                     // cfg.training.gradient_accumulate_every,
-            # pytorch assumes stepping LRScheduler every epoch
-            # however huggingface diffusers steps it every batch
             last_epoch=self.global_step-1
         )
 
@@ -333,19 +331,12 @@ class TrainDP3Workspace:
                 for key, value in step_log.items():
                     new_key = key.replace('/', '_')
                     metric_dict[new_key] = value
-                
-                # We can't copy the last checkpoint here
-                # since save_checkpoint uses threads.
-                # therefore at this point the file might have been empty!
                 topk_ckpt_path = topk_manager.get_ckpt_path(metric_dict)
 
                 if topk_ckpt_path is not None:
                     self.save_checkpoint(path=topk_ckpt_path)
             # ========= eval end for this epoch ==========
             policy.train()
-
-            # end of epoch
-            # log of last step is combined with validation and rollout
             wandb_run.log(step_log, step=self.global_step)
             self.global_step += 1
             self.epoch += 1
@@ -356,7 +347,6 @@ class TrainDP3Workspace:
 
     def eval(self):
         # load the latest checkpoint
-        
         cfg = copy.deepcopy(self.cfg)
         
         lastest_ckpt_path = self.get_checkpoint_path(tag="latest")
@@ -383,14 +373,12 @@ class TrainDP3Workspace:
         for key, value in runner_log.items():
             if isinstance(value, float):
                 cprint(f"{key}: {value:.4f}", 'magenta')
-        
     @property
     def output_dir(self):
         output_dir = self._output_dir
         if output_dir is None:
             output_dir = HydraConfig.get().runtime.output_dir
         return output_dir
-    
 
     def save_checkpoint(self, path=None, tag='latest', 
             exclude_keys=None,
@@ -453,8 +441,6 @@ class TrainDP3Workspace:
             return pathlib.Path(self.output_dir).joinpath('checkpoints', best_ckpt)
         else:
             raise NotImplementedError(f"tag {tag} not implemented")
-            
-            
 
     def load_payload(self, payload, exclude_keys=None, include_keys=None, **kwargs):
         if exclude_keys is None:
@@ -513,7 +499,6 @@ class TrainDP3Workspace:
     def create_from_snapshot(cls, path):
         return torch.load(open(path, 'rb'), pickle_module=dill)
     
-
 @hydra.main(
     version_base=None,
     config_path=str(pathlib.Path(__file__).parent.joinpath(

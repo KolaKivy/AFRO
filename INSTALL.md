@@ -83,13 +83,10 @@ and then install mujoco-py (in the folder of `third_party`):
 6.install sim env (in the folder of `third_party`):
 
     pip install setuptools==59.5.0 Cython==0.29.35 patchelf==0.17.2.0
-    
-    cd dexart-release && pip install -e . && cd ..
+
     cd gym-0.21.0 && pip install -e . && cd ..
     cd Metaworld && pip install -e . && cd ..
     cd rrl-dependencies && pip install -e mj_envs/. && pip install -e mjrl/. && cd ..
-
-download assets from [Google Drive](https://drive.google.com/file/d/1DxRfB4087PeM3Aejd6cR-RQVgOKdNrL4/view?usp=sharing), unzip it, and put it in `third_party/dexart-release/assets`. 
 
 download Adroit RL experts from [OneDrive](https://1drv.ms/u/s!Ag5QsBIFtRnTlFWqYWtS2wMMPKNX?e=dw8hsS), unzip it, and put the `ckpts` folder under `$YOUR_REPO_PATH/third_party/VRL3/`.
 

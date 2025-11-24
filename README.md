@@ -16,7 +16,7 @@
     bash scripts/gen_demonstration_metaworld.sh bin-picking
     ```
     
-    The first command will generate task `hammer` in Adroit, the second command line will generate task `bin-picking` in Metaworld. You can refer to DP3 to see all kinds of task supported in both Adroit and Metaworld. Tasks in dexart are also suppoted but wo don't test them in our work. **Note**: we default to collect 100 pairs of demonstration in adroit env and 25 in metaworld env, you can easily change this just in `gen_demonstration_*.sh`
+    The first command will generate task `hammer` in Adroit, the second command line will generate task `bin-picking` in Metaworld. You can refer to DP3 to see all kinds of task supported in both Adroit and Metaworld. **Note**: we default to collect 100 pairs of demonstration in adroit env and 25 in metaworld env, you can easily change this just in `gen_demonstration_*.sh`
 
 2. Train AFRO: 3D self-supervised pipeline to pretrain the visual encoder
 	```shell

@@ -62,7 +62,7 @@ class AdroitDataset(BaseDataset):
             'action': self.replay_buffer['action'],
             'agent_pos': self.replay_buffer['state'][...,:],
             'point_cloud': self.replay_buffer['point_cloud'],
-            'image': self.replay_buffer['img'], ## youngadd
+            'image': self.replay_buffer['img'],
         }
         normalizer = LinearNormalizer()
         normalizer.fit(data=data, last_n_dims=1, mode=mode, **kwargs)
@@ -74,13 +74,13 @@ class AdroitDataset(BaseDataset):
     def _sample_to_data(self, sample):
         agent_pos = sample['state'][:,].astype(np.float32) # (agent_posx2, block_posex3)
         point_cloud = sample['point_cloud'][:,].astype(np.float32) # (T, 1024, 6)
-        image = sample['img'][:,].astype(np.float32) ## youngadd
+        image = sample['img'][:,].astype(np.float32)
 
         data = {
             'obs': {
                 'point_cloud': point_cloud, # T, 1024, 6
                 'agent_pos': agent_pos, # T, D_pos
-                'image': image, ## youngadd
+                'image': image,
             },
             'action': sample['action'].astype(np.float32) # T, D_action
         }

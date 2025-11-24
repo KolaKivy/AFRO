@@ -1,5 +1,6 @@
 # Examples:
-# bash scripts/train_afro_policy.sh afro_policy adroit_pen 0001 0 0
+# bash scripts/train_policy.sh afro_policy adroit_hammer anything 0 0
+# bash scripts/train_policy.sh afro_policy metaworld_basketball anything 0 0
 
 DEBUG=False
 save_ckpt=True

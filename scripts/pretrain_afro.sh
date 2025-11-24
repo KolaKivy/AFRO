@@ -17,7 +17,6 @@ zarr_path="data/${task_name}_expert.zarr"
 gpu_id=${5}
 echo -e "\033[33mgpu id (to use): ${gpu_id}\033[0m"
 
-
 if [ $DEBUG = True ]; then
     wandb_mode=offline
     # wandb_mode=online
@@ -31,8 +30,6 @@ fi
 
 echo -e "\033[32mrun_dir: ${run_dir}\033[0m"
 echo -e "\033[32mzarr_path: ${zarr_path}\033[0m"
-
-
 
 export HYDRA_FULL_ERROR=1 
 export CUDA_VISIBLE_DEVICES=${gpu_id}

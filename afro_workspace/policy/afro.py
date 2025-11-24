@@ -9,7 +9,7 @@ from diffusers.schedulers.scheduling_ddpm import DDPMScheduler
 from afro_workspace.model.common.normalizer import LinearNormalizer
 from afro_workspace.common.pytorch_util import dict_apply
 from afro_workspace.common.model_util import print_params
-from afro_workspace.model.vision.pointnet_extractor import VisEncoder, DiTFDMDncoder
+from afro_workspace.model.vision.pointnet_extractor import VisEncoder, DiTFDMDecoder
 
 
 class AFRO(nn.Module):
@@ -28,12 +28,10 @@ class AFRO(nn.Module):
             lambda_long_term=1.0,
             lambda_reverse=1.0,
             fdm_d_model=256,
-            # ===== VICReg 目标权重（最终稳定到的数值） =====
             vicreg_inv_weight=25.0,
             vicreg_var_weight=25.0,
             vicreg_cov_weight=1.0,
             vicreg_eps=1e-4,
-            # ===== VICReg 预热配置 =====
             vicreg_warmup_start=0,        
             vicreg_warmup_epochs=0,   
             **kwargs):
@@ -80,7 +78,6 @@ class AFRO(nn.Module):
         cprint(f"[AFRO] use_pc_color: {self.use_pc_color}", "yellow")
         cprint(f"[AFRO] pointnet_type: {self.pointnet_type}", "yellow")
 
-        # ======= Projector（带 EMA）=======
         D = self.obs_feature_dim
 
         # bookkeeping
@@ -100,7 +97,7 @@ class AFRO(nn.Module):
         )
 
         # ===== FDM =====
-        self.fdm_vis_decoder = DiTFDMDncoder(input_dim=D, hidden=fdm_d_model, depth=4, num_heads=4)
+        self.fdm_vis_decoder = DiTFDMDecoder(input_dim=D, hidden=fdm_d_model, depth=4, num_heads=4)
         self.noise_scheduler = noise_scheduler
 
         # training details
@@ -111,19 +108,18 @@ class AFRO(nn.Module):
         self.ema_momentum_start = float(ema_momentum_start)
         self.ema_target_epoch = int(ema_target_epoch)
 
-        # VICReg 目标权重（最终稳定值）
+        # VICReg 
         self.vicreg_inv_weight = float(vicreg_inv_weight)
         self.vicreg_var_weight = float(vicreg_var_weight)
         self.vicreg_cov_weight = float(vicreg_cov_weight)
         self.vicreg_eps = vicreg_eps
 
-        # VICReg 预热配置
         self.vicreg_warmup_start = int(vicreg_warmup_start)
         self.vicreg_warmup_epochs = int(vicreg_warmup_epochs)
 
         print_params(self)
 
-    # ========= VICReg（直接在特征空间）=========
+    # ========= VICReg=========
     def _vicreg_loss(self, z1: torch.Tensor, z2: torch.Tensor,
                     inv_w: float, var_w: float, cov_w: float):
 
@@ -150,8 +146,6 @@ class AFRO(nn.Module):
         vicreg = inv_w * inv_loss + var_w * var_loss + cov_w * cov_loss
         return vicreg, inv_loss, var_loss, cov_loss
 
-
-    # ========= VICReg 预热系数 =========
     def _warmup_scale(self, epoch: int) -> float:
         start = self.vicreg_warmup_start
         warm = self.vicreg_warmup_epochs
@@ -211,12 +205,10 @@ class AFRO(nn.Module):
         nobs_sel = {k: v[:, sampled_times, ...] for k, v in nobs.items()}
         nobs_sel_flat = dict_apply(nobs_sel, lambda x: x.reshape(-1, *x.shape[2:]))
 
-        # Student 前向
         feats_stu_flat = self.vis_encoder(nobs_sel_flat)  # [B*M, D]
         D = feats_stu_flat.shape[-1]
         feats_stu = feats_stu_flat.view(B, M, D)
 
-        # Teacher 编码（EMA，无梯度）
         with torch.no_grad():
             feats_tea_flat = self.ema_vis_encoder(nobs_sel_flat)  # [B*M, D]
             feats_tea = feats_tea_flat.view(B, M, D)
@@ -228,13 +220,12 @@ class AFRO(nn.Module):
         f_t_tea   = feats_tea[:, :-1, :]
         f_tp1_tea = feats_tea[:,  1:, :]
 
-        # ===== 正向：差分 -> 16维动作 =====
         delta_stu = f_tp1_stu - f_t_stu                 # [B, M-1, D]
         mem = self.idm_mlp(delta_stu)                   # [B, M-1, 16]
 
         BM = B * (M - 1)
         f_t_cond     = f_t_stu.reshape(BM, D)
-        mem_flat     = mem.reshape(BM, self.latent_action_dim)  # 注意：mem 是 16 维
+        mem_flat     = mem.reshape(BM, self.latent_action_dim)  
         target_flat  = f_tp1_tea.reshape(BM, D)
 
         t_flat = torch.randint(
@@ -251,7 +242,7 @@ class AFRO(nn.Module):
         )
         long_term_loss = long_term_vicreg_loss
 
-        # ===== 逆向：预测 f_t，用教师目标做监督 =====
+        # ===== inverse =====
         delta_rev = f_t_stu - f_tp1_stu                  # [B, M-1, D]
         mem_rev = self.idm_mlp(delta_rev)                # [B, M-1, 16]
 
@@ -271,7 +262,6 @@ class AFRO(nn.Module):
             inv_w=inv_w_now, var_w=var_w_now, cov_w=cov_w_now
         )
 
-        # ===== 总损失 =====
         loss = self.lambda_long_term * long_term_loss + self.lambda_reverse * reverse_vicreg
         
         self.update_teacher(epoch)
@@ -284,7 +274,6 @@ class AFRO(nn.Module):
             'reverse_mse': float(reverse_inv_loss.item()),
             'reverse_var_loss': float(reverse_var_loss.item()),
             'reverse_cov_loss': float(reverse_cov_loss.item()),
-            # 记录当下生效的 VICReg 权重（含预热）
             'vicreg_inv_w_now': float(inv_w_now),
             'vicreg_var_w_now': float(var_w_now),
             'vicreg_cov_w_now': float(cov_w_now),
