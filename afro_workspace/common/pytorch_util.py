@@ -46,3 +46,29 @@ def optimizer_to(optimizer, device):
             if isinstance(v, torch.Tensor):
                 state[k] = v.to(device=device)
     return optimizer
+
+
+def _copy_to_cpu(obj):
+    """
+    Recursively copy a state_dict-like object to CPU.
+
+    - Tensors are detached and moved to CPU.
+    - dicts, lists and tuples are traversed recursively.
+    - other objects are returned as-is.
+
+    This is useful when saving checkpoints from a background thread
+    to avoid holding references to CUDA memory.
+    """
+    if isinstance(obj, torch.Tensor):
+        try:
+            return obj.detach().cpu()
+        except Exception:
+            return obj.cpu()
+    elif isinstance(obj, dict):
+        return {k: _copy_to_cpu(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_copy_to_cpu(v) for v in obj]
+    elif isinstance(obj, tuple):
+        return tuple(_copy_to_cpu(v) for v in obj)
+    else:
+        return obj

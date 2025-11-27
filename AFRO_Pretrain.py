@@ -27,7 +27,7 @@ from hydra.core.hydra_config import HydraConfig
 from afro_workspace.policy.afro import AFRO
 from afro_workspace.dataset.base_dataset import BaseDataset
 from afro_workspace.common.checkpoint_util import TopKCheckpointManager
-from afro_workspace.common.pytorch_util import dict_apply, optimizer_to
+from afro_workspace.common.pytorch_util import dict_apply, optimizer_to, _copy_to_cpu
 from afro_workspace.model.common.lr_scheduler import get_scheduler
 import matplotlib.pyplot as plt
 
@@ -193,90 +193,6 @@ class TrainDP3Workspace:
                     if (cfg.training.max_train_steps is not None) \
                         and batch_idx >= (cfg.training.max_train_steps-1):
                         break
-
-                # print("loss_total: {:.5f}, L_idm_action: {:.5f}, vis_diff_loss: {:.5f}".format(
-                #     loss_dict['loss_total'], loss_dict['L_idm_action'], loss_dict['vis_diff_loss']))
-                # print("loss_total: {:.5f}, L_idm_action: {:.5f}, vis_diff_loss: {:.5f}, sta_diff_loss: {:.5f}, consis_loss: {:.5f}, ema_consis_loss: {:.5f}".format(
-                #     loss_dict['loss_total'], loss_dict['L_idm_action'], loss_dict['vis_diff_loss'], loss_dict['sta_diff_loss'], loss_dict['consis_loss'], loss_dict['ema_consis_loss']))
-                # print("loss_total: {:.5f}, L_idm_action: {:.5f}, vis_diff_loss: {:.5f}, sta_diff_loss: {:.5f}, consis_loss: {:.5f}".format(
-                #     loss_dict['loss_total'], loss_dict['L_idm_action'], loss_dict['vis_diff_loss'], loss_dict['sta_diff_loss'], loss_dict['consis_loss']))
-                # print("consis_weak_loss: {:.5f}, vis_diff_loss: {:.5f}, consis_feat_loss: {:.5f}".format(
-                #     loss_dict['consis_weak_loss'], loss_dict['vis_diff_loss'], loss_dict['consis_feat_loss']))
-                
-                # print("vicreg_inv_mse: {:.5f}, vicreg_var: {:.5f}, vicreg_cov: {:.5f}".format(
-                #     loss_dict['vicreg_inv_mse'], loss_dict['vicreg_var'], loss_dict['vicreg_cov']))
-                # print("vicreg_loss: {:.5f}, cinfo_loss: {:.5f}".format(
-                #     loss_dict['vicreg_loss'], loss_dict['cinfo_loss']))
-                # print("v_mse: {:.5f}".format(
-                #     loss_dict['v_mse']))
-                
-                # print("consis_weak_loss: {:.5f}, vis_diff_loss: {:.5f}, consis_feat_loss: {:.5f}, vicreg_loss: {:.5f}".format(
-                #     loss_dict['consis_weak_loss'], loss_dict['vis_diff_loss'], loss_dict['consis_feat_loss'], loss_dict['vicreg_loss']))
-                # print("consis_weak_loss: {:.5f}, vis_diff_loss: {:.5f}, consis_feat_loss: {:.5f}".format(
-                #     loss_dict['consis_weak_loss'], loss_dict['vis_diff_loss'], loss_dict['consis_feat_loss']))
-
-                # print("consis_weak_loss: {:.5f}, vis_diff_loss: {:.5f}, consis_feat_loss: {:.5f}, long_term_loss: {:.5f}".format(
-                #     loss_dict['consis_weak_loss'], loss_dict['vis_diff_loss'], loss_dict['consis_feat_loss'], loss_dict['long_term_loss']))
-
-                # print("long_term_feat_loss: {:.5f}, long_term_contrast_loss: {:.5f}, long_term_vicreg_loss: {:.5f}".format(
-                #     loss_dict['long_term_feat_loss'], loss_dict['long_term_contrast_loss'], loss_dict['long_term_vicreg_loss']))
-                
-                # print("consis_weak_loss: {:.5f}, vis_diff_loss: {:.5f}, consis_feat_loss: {:.5f}, long_term_contrast_loss: {:.5f}, long_term_feat_loss: {:.5f}".format(
-                #     loss_dict['consis_weak_loss'], loss_dict['vis_diff_loss'], loss_dict['consis_feat_loss'], loss_dict['long_term_contrast_loss'], loss_dict['long_term_feat_loss']))
-
-                # print(
-                #     "loss_total: {:.5f} | fwd_vicreg: {:.5f} (inv:{:.5f}, var:{:.5f}, cov:{:.5f}) | "
-                #     "rev_vicreg: {:.5f} (inv:{:.5f}, var:{:.5f}, cov:{:.5f}) | symmetry: {:.5f} | pairs: {}"
-                #     .format(
-                #         loss_dict['loss_total'],
-                #         loss_dict['vicreg_fwd_total'], loss_dict['vicreg_fwd_inv_mse'], loss_dict['vicreg_fwd_var'], loss_dict['vicreg_fwd_cov'],
-                #         loss_dict['vicreg_rev_total'], loss_dict['vicreg_rev_inv_mse'], loss_dict['vicreg_rev_var'], loss_dict['vicreg_rev_cov'],
-                #         loss_dict['symmetry_loss'],
-                #         loss_dict['pairs'],
-                #     )
-                # )
-                
-            # print(
-            #     "loss_total: {:.5f} | fwd_vicreg: {:.5f} (inv:{:.5f}, var:{:.5f}, cov:{:.5f}) | pairs: {}"
-            #     .format(
-            #         loss_dict['loss_total'],
-            #         loss_dict['vicreg_fwd_total'], loss_dict['vicreg_fwd_inv_mse'], loss_dict['vicreg_fwd_var'], loss_dict['vicreg_fwd_cov'],
-            #         loss_dict['pairs'],
-            #     )
-            # )
-
-            # print(
-            #     "loss_total: {:.5f} | ce: {:.5f} | cov_penalty: {:.5f} | var_penalty: {:.5f} | ema_decay: {:.6f} | pairs: {}"
-            #     .format(
-            #         loss_dict['loss_total'],
-            #         loss_dict['loss_ce'],
-            #         loss_dict['cov_penalty'],
-            #         loss_dict['var_penalty'],
-            #         loss_dict['ema_decay'],
-            #         loss_dict['pairs'],
-            #     )
-            # )
-
-            # print(
-            #     "loss_total: {:.5f} | "
-            #     "fwd_vicreg: {:.5f} | fwd_inv: {:.5f} | fwd_cov: {:.5f} | fwd_var: {:.5f} | "
-            #     "rev_vicreg(x{:.2f}): {:.5f} | rev_inv: {:.5f} | rev_cov: {:.5f} | rev_var: {:.5f} | "
-            #     "la_norm: {:.5f} | pairs: {}"
-            #     .format(
-            #         loss_dict['loss_total'],
-            #         loss_dict['vicreg_fwd_total'],
-            #         loss_dict['vicreg_fwd_inv_mse'],
-            #         loss_dict['vicreg_fwd_cov'],
-            #         loss_dict['vicreg_fwd_var'],
-            #         # float(self.lambda_bidir),
-            #         loss_dict['vicreg_rev_total'],
-            #         loss_dict['vicreg_rev_inv_mse'],
-            #         loss_dict['vicreg_rev_cov'],
-            #         loss_dict['vicreg_rev_var'],
-            #         loss_dict['la_norm_mean'],
-            #         loss_dict['pairs'],
-            #     )
-            # )
                
             train_loss = np.mean(train_losses)
             step_log['train_loss'] = train_loss 

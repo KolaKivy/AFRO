@@ -28,7 +28,7 @@ from afro_workspace.policy.afro_policy import AFRO_policy
 from afro_workspace.dataset.base_dataset import BaseDataset
 from afro_workspace.env_runner.base_runner import BaseRunner
 from afro_workspace.common.checkpoint_util import TopKCheckpointManager
-from afro_workspace.common.pytorch_util import dict_apply, optimizer_to
+from afro_workspace.common.pytorch_util import dict_apply, optimizer_to, _copy_to_cpu
 from afro_workspace.model.diffusion.ema_model import EMAModel
 from afro_workspace.model.common.lr_scheduler import get_scheduler
 
