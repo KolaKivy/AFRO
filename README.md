@@ -1,6 +1,16 @@
-**[Project Page]** | **arXiv**(soon to come)
+<div align="center">
+<h1>Bootstrap Dynamic-Aware 3D Visual Representation for Scalable Robot Learning</h1>
+
+<a href="https://arxiv.org/pdf/2512.00074" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Paper-PDF-red" alt="Paper PDF">
+</a>
+<a href="https://arxiv.org/abs/2512.00074"><img src="https://img.shields.io/badge/arXiv-2512.00074-b31b1b" alt="arXiv"></a>
+<a href="https://kolakivy.github.io/AFRO/"><img src="https://img.shields.io/badge/Project_Page-green" alt="Project Page"></a>
+
 
 **[Qiwei Liang](https://kolakivy.github.io/)**, Boyang Cai, Minghao Lai, Sitong Zhuang, [Tao Lin](https://lintao.online/), Yan Qin, Yixuan Ye, Jiaming Liang, [Renjing Xu](https://openreview.net/profile?id=~Renjing_Xu1)
+
+</div>
 
 <p align="center">
 <img src="./teaser.png" width="100%"/>
