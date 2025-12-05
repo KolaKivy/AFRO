@@ -76,12 +76,9 @@ By the way, you ought to change the `pointnet_type` in `afro_policy.yaml` when y
 If you find our work useful, please consider citing:
 
 ```
-@misc{liang2025bootstrapdynamicaware3dvisual,
-      title={Bootstrap Dynamic-Aware 3D Visual Representation for Scalable Robot Learning}, 
-      author={Qiwei Liang and Boyang Cai and Minghao Lai and Sitong Zhuang and Tao Lin and Yan Qin and Yixuan Ye and Jiaming Liang and Renjing Xu},
-      year={2025},
-      eprint={2512.00074},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2512.00074}, 
+@article{liang2025bootstrap,
+  title={Bootstrap Dynamic-Aware 3D Visual Representation for Scalable Robot Learning},
+  author={Liang, Qiwei and Cai, Boyang and Lai, Minghao and Zhuang, Sitong and Lin, Tao and Qin, Yan and Ye, Yixuan and Liang, Jiaming and Xu, Renjing},
+  journal={arXiv preprint arXiv:2512.00074},
+  year={2025}
 }```
