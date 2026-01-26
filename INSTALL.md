@@ -82,7 +82,7 @@ and then install mujoco-py (in the folder of `third_party`):
 
 6.install sim env (in the folder of `third_party`):
 
-    pip install setuptools==59.5.0 Cython==0.29.35 patchelf==0.17.2.0
+    pip install setuptools==80.10.2 Cython==0.29.35 patchelf==0.17.2.0
 
     cd gym-0.21.0 && pip install -e . && cd ..
     cd Metaworld && pip install -e . && cd ..
@@ -94,7 +94,7 @@ download Adroit RL experts from [OneDrive](https://1drv.ms/u/s!Ag5QsBIFtRnTlFWqY
 
 7.install pytorch3d (a simplified version)
 
-    cd pytorch3d_simplified && pip install -e . && cd ..
+    cd pytorch3d_simplified && pip install --no-build-isolation -e . && cd ..
 
 
 ---
